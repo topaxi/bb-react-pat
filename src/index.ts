@@ -11,24 +11,44 @@ function main() {
   initializeReveal();
 }
 
-function initializeReveal() {
-  let revealRoot = document.createElement('div');
-  revealRoot.className = 'reveal'
+function createElement<T extends keyof HTMLElementTagNameMap>(tag: T, props: Partial<HTMLElementTagNameMap[T]> = {}): HTMLElementTagNameMap[T] {
+  let { dataset, ...rest } = props;
+  let element = Object.assign(document.createElement(tag), rest);
 
-  let slides = document.createElement('div');
-  slides.className = 'slides';
+  if (dataset != null) {
+    for (let key in dataset) {
+      element.dataset[key] = dataset[key];
+    }
+  }
+
+  return element;
+}
+
+type Html = { [key in keyof HTMLElementTagNameMap]: (props?: Partial<HTMLElementTagNameMap[key]>) => HTMLElementTagNameMap[key] };
+
+const html = new Proxy<Html>({} as any, {
+  get(target, prop: keyof HTMLElementTagNameMap) {
+    if (prop in target) return target[prop];
+
+    return (target[prop] = createElement.bind(target, prop));
+  }
+});
+
+function initializeReveal() {
+  let revealRoot = html.div({ className: 'reveal' });
+  let slides = html.div({ className: 'slides' });
 
   for (const { default: content } of Object.values(markdownFiles)) {
-    let section = document.createElement('section');
-    section.dataset.markdown = '';
+    let section = html.section({ dataset: { markdown: '' } });
 
-    let markdown = document.createElement('script');
-    markdown.type = 'text/template';
-    markdown.dataset.template = '';
-    markdown.textContent = replaceBaseUrlMarkdown(content);
+    let markdown = html.script({
+      type: 'text/template',
+      textContent: replaceBaseUrlMarkdown(content),
+      dataset: { template: '' }
+    });
     section.append(markdown);
 
-    let wrapper = document.createElement('section');
+    let wrapper = html.section();
     wrapper.append(section)
     slides.append(wrapper);
   }
