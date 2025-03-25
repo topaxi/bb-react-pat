@@ -1,0 +1,21 @@
+{
+  "name": "bb-react-pat",
+  "version": "1.0.0",
+  "description": "React Component Patterns Brown Bag",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "author": "Damian Senn <damian.senn@ti8m.ch>",
+  "license": "ISC",
+  "dependencies": {
+    "reveal.js": "^5.2.0"
+  },
+  "devDependencies": {
+    "@types/reveal.js": "^5.0.5",
+    "typescript": "^5.8.2",
+    "vite": "^6.2.3"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "noEmit": true,
+    "types": ["vite/client"],
+    "module": "ES2022",
+    "lib": ["DOM", "ES2023"],
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true
+  }
+}
