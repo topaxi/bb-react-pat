@@ -32,12 +32,15 @@
 ## Closed Component Example
 
 ```tsx
+const ICONS = { Cat: "🐈", Dog: "🐕" };
+
 function PetList({ pets }) {
   return (
     <ul className="pet-list">
       {pets.map(pet => (
         <li className="pet-list__item" key={pet.id}>
-          {pet.type} {pet.name}
+          <i className="pet-list__item-icon">{ICONS[pet.type]}</i>
+          {pet.name}
         </li>
       )}
     </ul>
@@ -55,7 +58,8 @@ function PetList({ className, itemClassName, pets }) {
     <ul className={`pet-list ${className}`}>
       {pets.map(pet => (
         <li className={`pet-list__item ${itemClassName}`} key={pet.id}>
-          {pet.type} {pet.name}
+          <i className="pet-list__item-icon">{ICONS[pet.type]}</i>
+          {pet.name}
         </li>
       )}
     </ul>
@@ -67,7 +71,7 @@ function PetList({ className, itemClassName, pets }) {
 
 ## Make it interactive!
 
-```tsx [1|6-14]
+```tsx [1|6-19]
 function PetList({ href, onItemClick, className, itemClassName, pets }) {
   return (
     <ul className={`pet-list ${className}`}>
@@ -75,13 +79,18 @@ function PetList({ href, onItemClick, className, itemClassName, pets }) {
         <li className={`pet-list__item ${itemClassName}`} key={pet.id}>
           {onItemClick ?
             <button onItemClick={onItemClick}>
-              {pet.type} {pet.name}
+              <i className="pet-list__item-icon">{ICONS[pet.type]}</i>
+              {pet.name}
             </button> :
             href ?
               <a href={href}>
-                {pet.type} {pet.name}
+                <i className="pet-list__item-icon">{ICONS[pet.type]}</i>
+                {pet.name}
               </a> :
-            <>{pet.type} {pet.name}<>}
+            <>
+              <i className="pet-list__item-icon">{ICONS[pet.type]}</i>
+              {pet.name}
+            <>}
         </li>
       )}
     </ul>
@@ -93,12 +102,15 @@ function PetList({ href, onItemClick, className, itemClassName, pets }) {
 
 ## Refactor duplicated code!
 
-```tsx [1|5,9-12]
+```tsx [1|5-8,12-15]
 function PetList({ href, onItemClick, className, itemClassName, pets }) {
   return (
     <ul className={className}>
       {pets.map(pet => {
-        let content = <>{pet.type} {pet.name}<>;
+        let content = <>
+          <i className="pet-list__item-icon">{ICONS[pet.type]}</i>
+          {pet.name}
+        <>;
 
         return (
           <li key={pet.id} className={itemClassName}>
@@ -153,6 +165,9 @@ function ListItem({ className, ...props }) {
 ---
 
 ## Implement specific use-case
+
+- Provide overridable default behavior
+- Here we infer icons based on type, but let the developer overwrite or remove the icon.
 
 ```tsx
 function PetList({ className, ...props }) {
