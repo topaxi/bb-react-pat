@@ -17,6 +17,24 @@
       * {
         text-transform: none !important;
       }
+
+      .reveal pre {
+        width: 98% !important;
+      }
+
+      [data-marker="✓"]::marker {
+        color: #a6e22e;
+      }
+      [data-marker="✕"]::marker {
+        color: #f92672;
+      }
+
+      li[data-marker] {
+        list-style-type: none;
+      }
+      li[data-marker]::marker {
+        content: attr(data-marker) " ";
+      }
     </style>
   </head>
   <body>

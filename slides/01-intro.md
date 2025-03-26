@@ -32,36 +32,6 @@ by Damian Senn
     - Reducers
     - State Machines
 
-## Recommendations
-
-- In growing apps
-  - Separate app components (closed) from design system components (open)
-    - Different module or folder, eg.
-      - src/app/components
-      - src/ui/components
-    - Monorepo
-    - Separate repository in case of multiple projects consuming the design
-      system.
-
-## Not today (not this presentation)
-
-- "Prop drilling"
-- Managing derived state
-- No effect cleanups
-- Effects with too many responsibilities
-- Boolean props or states
-  - instead of enums / union types
-  - instead of composition
-- Impure Components
-  - new Date() / Date.now()
-  - Math.random()
-  - Generating ids (for example uuid)
-- Storing too much in context
-  - Causes unnecessary rerender of all consumers
-    - Split into multiple contexts, one using actions/methods one using
-      state. Or split state which frequently changes and state which rarely
-      changes into their own context.
-
 ---
 
 # Agenda
@@ -69,6 +39,7 @@ by Damian Senn
 - Introduction
 - Open vs Closed Components
 - How to build Open Components
+- Conclusion and Recommendations
 - Questions
 
 ---

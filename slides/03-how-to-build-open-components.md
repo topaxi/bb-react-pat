@@ -1,4 +1,16 @@
-# How to build Open Components
+# How to build
+
+# (more complex)
+
+# Open Components
+
+---
+
+## Example Accordion
+
+- Start headless, with a hook
+  - manages state
+  - returns props and event handlers for elements
 
 ---
 
