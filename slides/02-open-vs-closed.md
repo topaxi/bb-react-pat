@@ -200,11 +200,11 @@ function PetSummaryListPage({ pets }) {
   return (
     <PetList>
       {pets.map(pet => (
-        <ListItem type={pet.type} key={pet.id}>
+        <PetListItem type={pet.type} key={pet.id}>
           {pet.name}
-        </ListItem>
+        </PetListItem>
       )}
-    </List>
+    </PetList>
   )
 }
 ```
@@ -212,6 +212,8 @@ function PetSummaryListPage({ pets }) {
 ---
 
 ## Customize Open Component
+
+- Adding behavior becomes trivial
 
 ```tsx
 function PetSummaryListPage({ pets }) {

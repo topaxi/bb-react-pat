@@ -64,6 +64,18 @@ export function useControlledState(controlledValue, defaultValue) {
 
 ---
 
+### Some helpers first!
+
+- `composeEventHandlers`<br>
+  to let developers pass in their own behavior and potentially prevent the default implementation
+- `useCallbackRef`<br>
+  to have stable references to event handlers, which avoids
+  unnecessary rerenders
+- `useControlledState`<br>
+  to optionally control components state from the outside
+
+---
+
 ## useAccordion()
 
 - Start headless, with a hook
@@ -75,7 +87,7 @@ export function useControlledState(controlledValue, defaultValue) {
 
 ## useAccordion() Interfaces
 
-```tsx [1-3|5-9|12-14|16-26|18|19-22|23-26|29-31]
+```tsx [1-3|5-10|12-15|16-31|18|19-22|23-26|27-30|33-35]
 interface UseAccordionItem {
   readonly value: string | number;
 }
@@ -125,7 +137,7 @@ interface UseAccordion<Item extends UseAccordionItem>
 
 ## useAccordion()
 
-```tsx [|1|2-3|5-8|10|12-20|19|22|51|24|26-28|29-37|38-49|44-47]
+```tsx [|2-3|5-8|10|12-20|19|22|60|24|26-28|29-37|38-49|44-47|50-58]
 function useAccordion<T>(props: UseAccordionProps<T>): UseAccordion<T> {
   let autoId = useId();
   let id = props.id || autoId;
@@ -242,7 +254,7 @@ export const useAccordionItemContext =
 
 ## Accordion Elements
 
-```tsx [1-4|5-14|16-17|]
+```tsx [1-6|6-14|16-17|20-21,26-27|22-25|31-35|35-40|42-49|52-62|64-73|76-79]
 interface AccordionContainerProps<T>
   extends
     React.HTMLAttributes<HTMLDivElement>,
@@ -317,13 +329,24 @@ function AccordionItemContent() {
     />
   );
 }
+
+export const Root = AccordionContainer;
+export const Item = AccordionItem;
+export const ItemTrigger = AccordionItemTrigger;
+export const ItemContent = AccordionItemContent;
+
+
+
+
 ```
 
 ---
 
 ## Usage of Accordion
 
-```tsx
+```tsx [|1|3-7|10|11|12-28|13-17|18-27]
+import * as Accordion from './accordion';
+
 function PetDetails({ pets }) {
   let items = useMemo(
     () => pets.map(pet => ({ value: pet.id, pet })),
@@ -333,13 +356,13 @@ function PetDetails({ pets }) {
   return (
     <Accordion.Root items={items}>
       {items.map(({ value, pet }) => (
-        <AccordionItem key={value} value={value}>
+        <Accordion.Item key={value} value={value}>
           <h3>
-            <AccordionItemTrigger>
+            <Accordion.ItemTrigger>
               {pet.name}
-            </AccordionItemTrigger>
+            </Accordion.ItemTrigger>
           </h3>
-          <AccordionItemContent>
+          <AccordionItem.Content>
             <ul>
               {pet.foods.map(f => (
                 <li key={f.id}>
@@ -348,8 +371,8 @@ function PetDetails({ pets }) {
                 </li>
               ))}
             </ul>
-          </AccordionItemContent>
-        </AccordionItem>
+          </AccordionItem.Content>
+        </Accordion.Item>
       ));
     </Accordion.Root>
   );
@@ -362,9 +385,9 @@ function PetDetails({ pets }) {
 
 - Let the accordion items register themselves on the container
 - Allow elements of components to be overwritten
-  - Ark or Radix use `asChild`
+  - Ark or Radix use an `asChild` prop
   - Radix also offers slots
-  - StyledComponents `as`
+  - StyledComponents use `as` prop
 
 ---
 
