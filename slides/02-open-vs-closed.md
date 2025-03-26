@@ -1,14 +1,17 @@
-# Open vs Closed Components
+# Open Components
+
+# vs
+
+# Closed Components
 
 ---
-
-## Open vs Closed Components
 
 - Closed components encapsulate everything
   - State
   - Behavior
   - Layout and style
 - Open components let you compose everything
+  - Controlled and uncontrolled state
   - Reusable hooks
   - Slots
   - Render props
@@ -268,3 +271,16 @@ function PetFoodListPage({ pets }) {
 - Always possible to wrap / repackage in a closed component
   - In fact, the `PetSummaryListPage` and `PetFoodListPage` were closed
     components.
+
+---
+
+## Open vs Closed Components
+
+- Closed components encapsulate everything
+  - State
+  - Behavior
+  - Layout and style
+- Open components let you compose everything
+  - Reusable hooks
+  - Slots
+  - Render props
