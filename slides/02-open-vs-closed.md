@@ -137,8 +137,9 @@ function PetList({ href, onItemClick, className, itemClassName, pets }) {
   - Add further "target" props or replace "href" prop with an options object
   - Use the `onItemClick` prop instead and imperatively open a link
 - The contents should be customizable
-  - I don't always want to see the `pet.type`
-  - I want to have a list where I see the pets favorite food
+  - I don't always want to see the pet icon
+  - I want to customize the icon or extend with further `pet.type`s
+  - I want the pets favorite food(s) in the list
 
 ---
 

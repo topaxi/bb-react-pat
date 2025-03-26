@@ -1,4 +1,5 @@
-# How to build
+
+How to build
 
 # (more complex)
 
@@ -74,7 +75,7 @@ export function useControlledState(controlledValue, defaultValue) {
 
 ## useAccordion() Interfaces
 
-```tsx [1-3|5-9|12-14|16-26|17|18-21|22-25|28-30]
+```tsx [1-3|5-9|12-14|16-26|18|19-22|23-26|29-31]
 interface UseAccordionItem {
   readonly value: string | number;
 }
@@ -101,6 +102,10 @@ interface UseAccordionApi<Item extends UseAccordionItem> {
     item: Item,
     props: React.HTMLAttributes,
   ) => React.HTMLAttributes;
+  getItemContentProps: (
+    item: Item,
+    props: React.HTMLAttributes,
+  ) => React.HTMLAttributes;
 }
 
 interface UseAccordion<Item extends UseAccordionItem>
@@ -120,7 +125,7 @@ interface UseAccordion<Item extends UseAccordionItem>
 
 ## useAccordion()
 
-```tsx [|1|2-3|5-8|10|12-20|19|22|51|24|26-28|29-37|38-49]
+```tsx [|1|2-3|5-8|10|12-20|19|22|51|24|26-28|29-37|38-49|44-47]
 function useAccordion<T>(props: UseAccordionProps<T>): UseAccordion<T> {
   let autoId = useId();
   let id = props.id || autoId;
@@ -151,7 +156,7 @@ function useAccordion<T>(props: UseAccordionProps<T>): UseAccordion<T> {
       },
       getItemProps(item, props) {
         return {
-          id: `${id}-item`,
+          id: `${id}:item`,
           "data-state": selected.value === item.value ?
             "open" :
             "closed",
@@ -160,14 +165,23 @@ function useAccordion<T>(props: UseAccordionProps<T>): UseAccordion<T> {
       },
       getItemTriggerProps(item, props) {
         return {
-          id: `${id}-trigger`,
-          "aria-controls": `${id}-item`,
+          id: `${id}:trigger`,
+          "aria-controls": `${id}:item`,
           "aria-expanded": selected.value === item.value,
           ...props,
           onClick: composeEventHandlers(
             props.onClick,
             handleSelect(item)
           ),
+        };
+      },
+      getItemContentProps(item, props) {
+        return {
+          id: `${id}:content`,
+          "data-state": selected.value === item.value ?
+            "open" :
+            "closed",
+          ...props,
         };
       },
     }),
@@ -196,17 +210,20 @@ function useAccordion<T>(props: UseAccordionProps<T>): UseAccordion<T> {
 
 - Separate context values which change frequently and which change rarely.<br><small>(Does not fully apply in this example, as API always changes based on selected)</small>
 
-```tsx [1-4,9-10|6-7,11-16]
+```tsx [1-10|12-23]
 export const AccordionStateContext =
   createContext<UseAccordionState<unknown>>({
     selected: null,
   });
 
-export const useAccordionState =
-  () => useContext(AccordionStateContext);
-
 export const AccordionApiContext =
   createContext<UseAccordionApi<unknown> | null>(null);
+
+export const AccordionItemContext =
+  createContext<unknown>(null);
+
+export const useAccordionState =
+  () => useContext(AccordionStateContext);
 
 export const useAccordionApi = () => {
   let api = useContext(AccordionApiContext);
@@ -214,19 +231,24 @@ export const useAccordionApi = () => {
     throw new Error('Must be used within Accordion.Root');
   return api;
 }
+
+export const useAccordionItemContext =
+  () => useContext(AccordionItemContext)
+
+
 ```
 
 ---
 
 ## Accordion Elements
 
-```tsx
+```tsx [1-4|5-14|16-17|]
 interface AccordionContainerProps<T>
   extends
     React.HTMLAttributes<HTMLDivElement>,
     UseAccordionProps<T> {}
 
-function AccordionContainer<T>(props: AccordionContainerProps) {
+function AccordionContainer<T>(props: AccordionContainerProps<T>) {
   let {
     items,
     selected,
@@ -242,10 +264,11 @@ function AccordionContainer<T>(props: AccordionContainerProps) {
   return (
     <AccordionApiContext.Provider value={api}>
       <AccordionStateContext.Provider value={{ selected }}>
-       <div
-         className={`my-accordion ${className}`}
-         {...api.getContainerProps(rest)}
-       />
+        <div
+          className={`my-accordion ${className}`}
+          {...api.getContainerProps(rest)}
+        />
+      </AccordionStateContext.Provider>
     </AccordionApiContext.Provider>
   );
 }
@@ -256,17 +279,24 @@ interface AccordionItemProps extends React.HTMLAttributes<HTMLDivElement> {
 
 function AccordionItem({ value, ...rest }) {
   let api = useAccordionApi();
+  let item = useMemo(
+    () => api.items.find(item => item.value == value),
+    [value, api.items]
+  );
 
   return (
-    <div
-      {...api.getItemProps(item, rest)}
-      className={`my-accordion__item ${rest.className}`}
-    />
+    <AccordionItemContext value={item}>
+      <div
+        {...api.getItemProps(item, rest)}
+        className={`my-accordion__item ${rest.className}`}
+      />
+    </AccordionItemContext>
   );
 }
 
 interface AccordionItemTrigger(props) {
   let api = useAccordionApi();
+  let item = useAccordionItem();
 
   return (
     <button
@@ -275,14 +305,72 @@ interface AccordionItemTrigger(props) {
     />
   );
 }
+
+function AccordionItemContent() {
+  let api = useAccordionApi();
+  let item = useAccordionItem();
+
+  return (
+    <div
+      {...api.getItemContentProps(item, props)}
+      className={`my-accordion__item-content ${props.className}`}
+    />
+  );
+}
 ```
+
+---
+
+## Usage of Accordion
+
+```tsx
+function PetDetails({ pets }) {
+  let items = useMemo(
+    () => pets.map(pet => ({ value: pet.id, pet })),
+    [pets],
+  );
+
+  return (
+    <Accordion.Root items={items}>
+      {items.map(({ value, pet }) => (
+        <AccordionItem key={value} value={value}>
+          <h3>
+            <AccordionItemTrigger>
+              {pet.name}
+            </AccordionItemTrigger>
+          </h3>
+          <AccordionItemContent>
+            <ul>
+              {pet.foods.map(f => (
+                <li key={f.id}>
+                  {f.isFavorite ? '❤️' : '😐'}
+                  {f.name}
+                </li>
+              ))}
+            </ul>
+          </AccordionItemContent>
+        </AccordionItem>
+      ));
+    </Accordion.Root>
+  );
+}
+```
+
+---
+
+### Further potential improvements
+
+- Let the accordion items register themselves on the container
+- Allow elements of components to be overwritten
+  - Ark or Radix use `asChild`
+  - Radix also offers slots
+  - StyledComponents `as`
 
 ---
 
 ### Accordion Component Summary
 
 - Create components for each individual "part" / element
-- Allow each component to overwrite their rendered element (ala Radix `asChild`)
 - Use context provider(s) within the Root node to pass down the exposed API
   (state, props getters, imperative functions like state setters, event handlers,
   etc.) by the hook.
