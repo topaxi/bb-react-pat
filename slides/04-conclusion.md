@@ -1,4 +1,4 @@
-## Recap Open vs Closed Components
+## Recap Open vs Closed
 
 - Closed components encapsulate everything
   - State

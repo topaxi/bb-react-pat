@@ -35,7 +35,7 @@
 ## Closed Component Example
 
 ```tsx
-const ICONS = { Cat: "🐈", Dog: "🐕" };
+const ICONS = { Cat: "🐈", Dog: "🐕" }
 
 function PetList({ pets }) {
   return (
@@ -113,7 +113,7 @@ function PetList({ href, onItemClick, className, itemClassName, pets }) {
         let content = <>
           <i className="pet-list__item-icon">{ICONS[pet.type]}</i>
           {pet.name}
-        <>;
+        <>
 
         return (
           <li key={pet.id} className={itemClassName}>
@@ -180,7 +180,7 @@ function PetList({ className, ...props }) {
 const ICONS = { Cat: "🐈", Dog: "🐕" };
 
 function PetListItem(props) {
-  const { className, type, icon = ICONS[type], ...rest } = props;
+  let { className, type, icon = ICONS[type], ...rest } = props;
   return (
     <ListItem {...rest} className={`pet-list__item ${className}`}>
       {icon && <i className="pet-list__item-icon">{icon}</i>}
