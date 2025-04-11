@@ -362,7 +362,7 @@ function PetDetails({ pets }) {
               {pet.name}
             </Accordion.ItemTrigger>
           </h3>
-          <AccordionItem.Content>
+          <Accordion.ItemContent>
             <ul>
               {pet.foods.map(f => (
                 <li key={f.id}>
@@ -371,9 +371,9 @@ function PetDetails({ pets }) {
                 </li>
               ))}
             </ul>
-          </AccordionItem.Content>
+          </Accordion.ItemContent>
         </Accordion.Item>
-      ));
+      ))}
     </Accordion.Root>
   );
 }
