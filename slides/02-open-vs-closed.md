@@ -45,7 +45,7 @@ function PetList({ pets }) {
           <i className="pet-list__item-icon">{ICONS[pet.type]}</i>
           {pet.name}
         </li>
-      )}
+      ))}
     </ul>
   )
 }
@@ -64,7 +64,7 @@ function PetList({ className, itemClassName, pets }) {
           <i className="pet-list__item-icon">{ICONS[pet.type]}</i>
           {pet.name}
         </li>
-      )}
+      ))}
     </ul>
   )
 }
@@ -95,7 +95,7 @@ function PetList({ href, onItemClick, className, itemClassName, pets }) {
               {pet.name}
             <>}
         </li>
-      )}
+      ))}
     </ul>
   )
 }
@@ -123,7 +123,7 @@ function PetList({ href, onItemClick, className, itemClassName, pets }) {
               content}
           </li>
         )
-      }}
+      })}
     </ul>
   )
 }
@@ -203,7 +203,7 @@ function PetSummaryListPage({ pets }) {
         <PetListItem type={pet.type} key={pet.id}>
           {pet.name}
         </PetListItem>
-      )}
+      ))}
     </PetList>
   )
 }
@@ -225,7 +225,7 @@ function PetSummaryListPage({ pets }) {
             {pet.name}
           </a>
         </PetListItem>
-      )}
+      ))}
     </PetList>
   )
 }
@@ -252,12 +252,12 @@ function PetFoodListPage({ pets }) {
           </h3>
 
           <ul className="pet-food-list__favorite-food-list">
-            {pet.food.filter(f => f.isFavorite).map(food =>
+            {pet.food.filter(f => f.isFavorite).map(food => (
               <li key={food.id}>{food.name}</li>
-            )}
+            ))}
           </ul>
         </PetListItem>
-      )}
+      ))}
     </PetList>
   )
 }
